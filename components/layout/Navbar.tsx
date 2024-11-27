@@ -116,8 +116,7 @@ const Navbar = () => {
         )}
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Contact Us</h2>
-        <ContactForm />
+        <ContactForm onClose={() => setIsModalOpen(false)} />
       </Modal>
     </nav>
   );

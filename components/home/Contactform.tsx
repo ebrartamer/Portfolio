@@ -1,13 +1,20 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 interface FormData {
   name: string;
   email: string;
   message: string;
 }
 
-const ContactForm = () => {
+interface ContactFormProps {
+  onClose?: () => void;
+}
+
+const ContactForm = ({ onClose }: ContactFormProps) => {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -16,6 +23,7 @@ const ContactForm = () => {
   const [errors, setErrors] = useState<{ [key in keyof FormData]?: string }>({});
   const [successMessage, setSuccessMessage] = useState('');
   const [isFormVisible, setIsFormVisible] = useState(true);
+  const [showSuccessCard, setShowSuccessCard] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -49,7 +57,8 @@ const ContactForm = () => {
     setSuccessMessage('Your message was successfully transmitted!');
     setFormData({ name: '', email: '', message: '' });
     setErrors({});
-    setIsFormVisible(false); // Formu kapat
+    setIsFormVisible(false);
+    setShowSuccessCard(true);
   };
 
   return (
@@ -132,14 +141,23 @@ const ContactForm = () => {
             Send
           </button>
         </form>
-      ) : (
+      ) : showSuccessCard ? (
         <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg">
           <p className="text-center text-lg font-medium text-green-700 dark:text-green-300">
             {successMessage}
           </p>
-          <Link href="/">Go To Home</Link>
+          <button 
+            onClick={() => {
+              setShowSuccessCard(false);
+              if (onClose) onClose();
+              router.push('/');
+            }}
+            className="mt-4 block w-full py-2 px-4 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-gray-900 text-center"
+          >
+            Go To Home
+          </button>
         </div>
-      )}
+      ) : null}
     </>
   );
 };
